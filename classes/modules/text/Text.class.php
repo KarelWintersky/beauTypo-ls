@@ -1,5 +1,14 @@
-<?
+<?php
+
+/**
+ *
+ */
 class PluginBeautypo_ModuleText extends PluginBeautypo_Inherit_ModuleText {
+
+    /**
+     * @param $sText
+     * @return string
+     */
     public function Parser($sText) {
         if (!is_string($sText)) {
             return '';

@@ -8,17 +8,25 @@
 if(!class_exists('Plugin')) {
 	die('Hacking attemp!');
 }
+/**
+ *
+ */
 class PluginBeautypo extends Plugin {
     protected $aInherits=array(
        'module'=>array('ModuleText'),
     );
 
-
-	public function Activate() {
+    /**
+     * @return bool
+     */
+    public function Activate() {
 		return true;
 	}
 
-	public function Init() {
+    /**
+     * @return bool
+     */
+    public function Init() {
         if(Config::Get('plugin.beautypo.enable_formatter')){
             Config::Set('head.rules.beautypo', array(
                 'path' => '___path.root.web___/',
@@ -32,9 +40,10 @@ class PluginBeautypo extends Plugin {
 		return true;
 	}
 
-	public function Deactivate() {
+    /**
+     * @return bool
+     */
+    public function Deactivate() {
 		return true;
 	}
 }
-
-?>

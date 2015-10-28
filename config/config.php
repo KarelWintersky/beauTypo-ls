@@ -44,4 +44,3 @@ Config::Set ('jevix.default.cfgSetAutoReplace', array(
 */
 
 return $config;
-?>

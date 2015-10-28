@@ -13,7 +13,7 @@ require_once(dirname(__FILE__)."/../modules/libs/Typo.class.php");
 require_once(dirname(__FILE__)."/../modules/libs/phphypher/hypher.php");
 
 function d() {
-    # Получаем все аргументы одним массивом
+    // Получаем все аргументы одним массивом
     $all_args = func_get_args();
     echo "<meta charset='UTF-8'><table><tr valign='top'>";
     foreach ($all_args as $key => $value) {
@@ -31,6 +31,9 @@ function d() {
     echo "<hr />";
 }
 
+/**
+ *
+ */
 class PluginBeautypo_HookBeautypo extends Hook {
     public function RegisterHook() {
         $this -> AddHook ('init_action', 'AddStylesAndJS');
@@ -41,4 +44,3 @@ class PluginBeautypo_HookBeautypo extends Hook {
         $this -> Viewer_AppendStyle ($sTemplateWebPath . 'css/style.css');
     }
 }
-?>

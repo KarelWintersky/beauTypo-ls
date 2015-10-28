@@ -1,118 +1,117 @@
-
 .txt-video {
-  margin-bottom: 1em;
-  position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 25px;
-  height: 0;
-  background: #000;
-  overflow: hidden
+    margin-bottom: 1em;
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 25px;
+    height: 0;
+    background: #000;
+    overflow: hidden;
 }
 
 .txt-video iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
 }
 
 .comment .text-style .txt-video {
-  margin-bottom: .7em
+    margin-bottom: .7em
 }
 
 .comment .text-style .txt-picture {
-  margin-bottom: .7em;
-  text-align: center
+    margin-bottom: .7em;
+    text-align: center;
 }
 
 .text .txt-video a, .comment .content .text-style .txt-video a {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
 .text .txt-video a:before, .comment .content .text-style .txt-video a:before {
-  content: "";
-  position: absolute;
-  z-index: 10;
-  left: 50%;
-  top: 50%;
-  margin: -30px 0 0 -43px;
-  width: 86px;
-  height: 60px;
-  border-radius: 15%;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  background-color: rgba(20, 20, 20, 0.9);
-  -webkit-box-shadow: 0 -1px 1px rgba(255, 255, 255, .5), 0 1px 1px rgba(0, 0, 0, .7);
-  box-shadow: 0 -1px 1px rgba(255, 255, 255, .5), 0 1px 1px rgba(0, 0, 0, .7)
+    content: "";
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    margin: -30px 0 0 -43px;
+    width: 86px;
+    height: 60px;
+    border-radius: 15%;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: rgba(20, 20, 20, 0.9);
+    -webkit-box-shadow: 0 -1px 1px rgba(255, 255, 255, .5), 0 1px 1px rgba(0, 0, 0, .7);
+    box-shadow: 0 -1px 1px rgba(255, 255, 255, .5), 0 1px 1px rgba(0, 0, 0, .7);
 }
 
 .text .txt-video a:hover:before, .comment .content .text-style .txt-video a:hover:before {
-  background: #cb322c;
-  background: -webkit-gradient(linear, left top, left bottom, from(#cb322c), to(#6e0610));
-  background: -webkit-linear-gradient(top, #cb322c, #6e0610);
-  background: -webkit-gradient(linear, top left, bottom left, from(#cb322c), to(#6e0610));
-  background: -webkit-linear-gradient(top, #cb322c, #6e0610);
-  background: linear-gradient(to bottom, #cb322c, #6e0610);
-  -ms-filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#cb322c', endColorstr='#6e0610');
-  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#cb322c', endColorstr='#6e0610')
+    background: #cb322c;
+    background: -webkit-gradient(linear, left top, left bottom, from(#cb322c), to(#6e0610));
+    background: -webkit-linear-gradient(top, #cb322c, #6e0610);
+    background: -webkit-gradient(linear, top left, bottom left, from(#cb322c), to(#6e0610));
+    background: -webkit-linear-gradient(top, #cb322c, #6e0610);
+    background: linear-gradient(to bottom, #cb322c, #6e0610);
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#cb322c', endColorstr='#6e0610');
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#cb322c', endColorstr='#6e0610');
 }
 
 .text .txt-video a:after, .comment .content .text-style .txt-video a:after {
-  content: "";
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 15px 0 15px 30px;
-  border-color: transparent transparent transparent #fff;
-  position: absolute;
-  z-index: 11;
-  left: 50%;
-  top: 50%;
-  margin: -15px 0 0 -12px
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 15px 0 15px 30px;
+    border-color: transparent transparent transparent #fff;
+    position: absolute;
+    z-index: 11;
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -12px;
 }
 
 .text .txt-video img, .comment .content .text-style .txt-video img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 .text .txt-video h5, .comment .content .text-style .txt-video h5 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
-  text-align: left;
-  padding: 5px 10px;
-  color: #ccc;
-  font-size: 16px;
-  font-weight:300;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.8);
-  text-shadow: 0 1px 0 #000;
-  overflow: hidden
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    text-align: left;
+    padding: 5px 10px;
+    color: #ccc;
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 0 #000;
+    overflow: hidden;
 }
 
 .text .txt-video.txt-video-youtube img, .comment .content .text-style .txt-video.txt-video-youtube img {
-  top: -13%;
-  height: auto
+    top: -13%;
+    height: auto;
 }
 
 .text .txt-picture, .comment .content .text-style .txt-picture {
-  margin-bottom: 1em;
-  text-align: center
+    margin-bottom: 1em;
+    text-align: center;
 }
 
 .text .txt-picture img, .comment .content .text-style .txt-picture img {
-  max-width: 100%;
-  outline: 1px solid #9d9d9d
+    max-width: 100%;
+    outline: 1px solid #9d9d9d;
 }

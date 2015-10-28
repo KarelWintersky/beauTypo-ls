@@ -12,43 +12,43 @@
 # <http://daringfireball.net/projects/markdown/>
 
 
-# Change to ">" for HTML output
+// Change to ">" for HTML output
 @define( 'MARKDOWN_EMPTY_ELEMENT_SUFFIX',  " />");
 
-# Define the width of a tab for code blocks.
+// Define the width of a tab for code blocks.
 @define( 'MARKDOWN_TAB_WIDTH',     4 );
 
-#
-# Markdown Parser Class
-#
+/**
+ * Markdown Parser Class
+ */
 class MarkdownParser {
 
-	# Regex to match balanced [brackets].
-	# Needed to insert a maximum bracked depth while converting to PHP.
-	var $nested_brackets_depth = 6;
-	var $nested_brackets_re;
+	// Regex to match balanced [brackets].
+	// Needed to insert a maximum bracked depth while converting to PHP.
+	public $nested_brackets_depth = 6;
+	public $nested_brackets_re;
 	
-	var $nested_url_parenthesis_depth = 4;
-	var $nested_url_parenthesis_re;
+	public $nested_url_parenthesis_depth = 4;
+	public $nested_url_parenthesis_re;
 
-	# Table of hash values for escaped characters:
-	var $escape_chars = '\`*_{}[]()>#+-.!';
-	var $escape_chars_re;
+	// Table of hash values for escaped characters:
+	public $escape_chars = '\`*_{}[]()>#+-.!';
+	public $escape_chars_re;
 
-	# Change to ">" for HTML output.
-	var $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
-	var $tab_width = MARKDOWN_TAB_WIDTH;
+	// Change to ">" for HTML output.
+	public $empty_element_suffix = MARKDOWN_EMPTY_ELEMENT_SUFFIX;
+	public $tab_width = MARKDOWN_TAB_WIDTH;
 	
-	# Change to `true` to disallow markup or entities.
-	var $no_markup = false;
-	var $no_entities = false;
+	// Change to `true` to disallow markup or entities.
+	public $no_markup = false;
+	public $no_entities = false;
 	
-	# Predefined urls and titles for reference links and images.
-	var $predef_urls = array();
-	var $predef_titles = array();
+	// Predefined urls and titles for reference links and images.
+	public $predef_urls = array();
+	public $predef_titles = array();
 
 
-	var $replace = array(
+	public $replace = array(
        '/' => 'em',
        '+' => 'small', 
        '-' => 'strike',
@@ -58,7 +58,8 @@ class MarkdownParser {
        '_' => 'u'
     );
 
-	function Markdown_Parser() {
+	function Markdown_Parser()
+    {
 	#
 	# Constructor function. Initialize appropriate member variables.
 	#
@@ -74,76 +75,79 @@ class MarkdownParser {
 		
 		$this->escape_chars_re = '['.preg_quote($this->escape_chars).']';
 		
-		# Sort document, block, and span gamut in ascendent priority order.
+		// Sort document, block, and span gamut in ascendent priority order.
 		asort($this->document_gamut);
 		asort($this->block_gamut);
 		asort($this->span_gamut);
 	}
 
 
-	# Internal hashes used during transformation.
-	var $urls = array();
-	var $titles = array();
-	var $html_hashes = array();
+	// Internal hashes used during transformation.
+	public $urls = array();
+	public $titles = array();
+	public $html_hashes = array();
 	
-	# Status flag to avoid invalid nesting.
-	var $in_anchor = false;
-	
-	
-	function setup() {
-	#
-	# Called before the transformation process starts to setup parser 
-	# states.
-	#
-		# Clear global hashes.
+	// Status flag to avoid invalid nesting.
+	public $in_anchor = false;
+
+    /**
+     * Called before the transformation process starts to setup parser
+     * states.
+     */
+    function setup()
+    {
+		// Clear global hashes.
 		$this->urls = $this->predef_urls;
 		$this->titles = $this->predef_titles;
 		$this->html_hashes = array();
 		
 		$in_anchor = false;
 	}
-	
-	function teardown() {
-	#
-	# Called after the transformation process to clear any variable 
-	# which may be taking up memory unnecessarly.
-	#
+
+    /**
+     * Called after the transformation process to clear any variable
+     * which may be taking up memory unnecessarly.
+     */
+    function teardown()
+    {
 		$this->urls = array();
 		$this->titles = array();
 		$this->html_hashes = array();
 	}
 
-
-	function transform($text) {
-	#
-	# Main function. Performs some preprocessing on the input text
-	# and pass it through the document gamut.
-	#
+    /**
+     * Main function. Performs some preprocessing on the input text
+     * and pass it through the document gamut.
+     * @param $text
+     * @return string
+     */
+    function transform($text)
+    {
 		$this->setup();
 	
-		# Remove UTF-8 BOM and marker character in input, if present.
+		// Remove UTF-8 BOM and marker character in input, if present.
 		$text = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $text);
 
-		# Standardize line endings:
-		#   DOS to Unix and Mac to Unix
+		// Standardize line endings:
+		//   DOS to Unix and Mac to Unix
 		$text = preg_replace('{\r\n?}', "\n", $text);
 		
-		# Make sure $text ends with a couple of newlines:
+		// Make sure $text ends with a couple of newlines:
 		$text .= "\n\n";
 
-		# Convert all tabs to spaces.
+		// Convert all tabs to spaces.
 		$text = $this->detab($text);
 
-		# Turn block-level HTML blocks into hash entries
+		// Turn block-level HTML blocks into hash entries
 		$text = $this->hashHTMLBlocks($text);
 
-		# Strip any lines consisting only of spaces and tabs.
-		# This makes subsequent regexen easier to write, because we can
-		# match consecutive blank lines with /\n+/ instead of something
-		# contorted like /[ ]*\n+/ .
+		// Strip any lines consisting only of spaces and tabs.
+		// This makes subsequent regexen easier to write, because we can
+		// match consecutive blank lines with /\n+/ instead of something
+		// contorted like /[ ]*\n+/ .
 		$text = preg_replace('/^[ ]+$/m', '', $text);
 
-		# Run document gamut methods.
+		// Run document gamut methods.
 		foreach ($this->document_gamut as $method => $priority) {
 			$text = $this->$method($text);
 		}
@@ -156,14 +160,20 @@ class MarkdownParser {
 		return $text . "\n";
 	}
 	
-	var $document_gamut = array(
+	public $document_gamut = array(
 		# Strip link definitions, store in hashes.
 		
 		"runBasicBlockGamut"   => 30,
 		);
 
 
-	function hashHTMLBlocks($text) {
+    /**
+     * Hashify HTML blocks:
+     * @param $text
+     * @return mixed
+     */
+    function hashHTMLBlocks($text)
+    {
 		if ($this->no_markup)  return $text;
 
 		$less_than_tab = $this->tab_width - 1;
@@ -211,8 +221,8 @@ class MarkdownParser {
 					(?>
 					  />
 					|
-					  >', $nested_tags_level).	# end of opening tag
-					  '.*?'.					# last level nested tag content
+					  >', $nested_tags_level).	// end of opening tag
+					  '.*?'.					// last level nested tag content
 			str_repeat('
 					  </\2\s*>	# closing nested tag
 					)
@@ -300,49 +310,63 @@ class MarkdownParser {
 
 		return $text;
 	}
-	function _hashHTMLBlocks_callback($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _hashHTMLBlocks_callback($matches)
+    {
 		$text = $matches[1];
 		$key  = $this->hashBlock($text);
 		return "\n\n$key\n\n";
 	}
-	
-	
-	function hashPart($text, $boundary = 'X') {
-	#
-	# Called whenever a tag must be hashed when a function insert an atomic 
-	# element in the text stream. Passing $text to through this function gives
-	# a unique text-token which will be reverted back when calling unhash.
-	#
-	# The $boundary argument specify what character should be used to surround
-	# the token. By convension, "B" is used for block elements that needs not
-	# to be wrapped into paragraph tags at the end, ":" is used for elements
-	# that are word separators and "X" is used in the general case.
-	#
-		# Swap back any tag hash found in $text so we do not have to `unhash`
-		# multiple times at the end.
+
+
+    /**
+     * Called whenever a tag must be hashed when a function insert an atomic
+     * element in the text stream. Passing $text to through this function gives
+     * a unique text-token which will be reverted back when calling unhash.
+     *
+     * The $boundary argument specify what character should be used to surround
+     * the token. By convension, "B" is used for block elements that needs not
+     * to be wrapped into paragraph tags at the end, ":" is used for elements
+     * that are word separators and "X" is used in the general case
+     *
+     * @param $text
+     * @param string $boundary
+     * @return string
+     */
+    function hashPart($text, $boundary = 'X')
+    {
+		// Swap back any tag hash found in $text so we do not have to `unhash`
+		// multiple times at the end.
 		$text = $this->unhash($text);
 		
-		# Then hash the block.
+		// Then hash the block.
 		static $i = 0;
 		$key = "$boundary\x1A" . ++$i . $boundary;
 		$this->html_hashes[$key] = $text;
-		return $key; # String that will replace the tag.
+		return $key; // String that will replace the tag.
 	}
 
 
-	function hashBlock($text) {
-	#
-	# Shortcut function for hashPart with block-level boundaries.
-	#
+    /**
+     * Shortcut function for hashPart with block-level boundaries.
+     * @param $text
+     * @return string
+     */
+    function hashBlock($text)
+    {
 		return $this->hashPart($text, 'B');
 	}
 
 
-	var $block_gamut = array(
-	#
+	public $block_gamut = array(
+	/*
 	# These are all the transformations that form block-level
 	# tags like paragraphs, headers, and list items.
-	#
+	*/
 		"doHeaders"         => 10,
 		
 		"doLinks"           => 30,
@@ -350,11 +374,14 @@ class MarkdownParser {
 		"doBlockQuotes"     => 60,
 		);
 
-	function runBlockGamut($text) {
-	#
-	# Run block gamut tranformations.
-	#
-		# We need to escape raw HTML in Markdown source before doing anything 
+    /**
+     * Run block gamut tranformations.
+     * @param $text
+     * @return string
+     */
+    function runBlockGamut($text)
+    {
+		# We need to escape raw HTML in Markdown source before doing anything
 		# else. This need to be done for each block, and not only at the 
 		# begining in the Markdown function since hashed blocks can be part of
 		# list items and could have been indented. Indented blocks would have 
@@ -363,13 +390,17 @@ class MarkdownParser {
 		
 		return $this->runBasicBlockGamut($text);
 	}
-	
-	function runBasicBlockGamut($text) {
-	#
-	# Run block gamut tranformations, without hashing HTML blocks. This is 
-	# useful when HTML blocks are known to be already hashed, like in the first
-	# whole-document pass.
-	#
+
+    /**
+     * Run block gamut tranformations, without hashing HTML blocks. This is
+     * useful when HTML blocks are known to be already hashed, like in the first
+     * whole-document pass.
+     *
+     * @param $text
+     * @return string
+     */
+    function runBasicBlockGamut($text)
+    {
 		foreach ($this->block_gamut as $method => $priority) {
 			$text = $this->$method($text);
 		}
@@ -381,7 +412,7 @@ class MarkdownParser {
 	}
 
 
-	var $span_gamut = array(
+	public $span_gamut = array(
 	#
 	# These are all the transformations that occur *within* block-level
 	# tags like paragraphs, headers, and list items.
@@ -394,10 +425,13 @@ class MarkdownParser {
 		"doItalicsAndBold"    =>  50,
 		);
 
-	function runSpanGamut($text) {
-	#
-	# Run span gamut tranformations.
-	#
+    /**
+     * Run span gamut tranformations.
+     * @param $text
+     * @return mixed
+     */
+    function runSpanGamut($text)
+    {
 		foreach ($this->span_gamut as $method => $priority) {
 			$text = $this->$method($text);
 		}
@@ -405,12 +439,22 @@ class MarkdownParser {
 		return $text;
 	}
 
-	function doLinks($text){
+    /**
+     * @param $text
+     * @return mixed
+     */
+    function doLinks($text)
+    {
 		$text = preg_replace("/(\(\()([^ ]+)\s([^\)]+)(\)\))/i", '<a href="$2">$3</a>', $text);
 		return $text;
 	}
 
-	function doHeaders($text) {
+    /**
+     * @param $text
+     * @return mixed
+     */
+    function doHeaders($text)
+    {
 		# Setext-style headers:
 		#	  Header 1
 		#	  ========
@@ -449,7 +493,13 @@ class MarkdownParser {
 
 		return $text;
 	}
-	function _doHeaders_callback_setext($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _doHeaders_callback_setext($matches)
+    {
 		# Terrible hack to check we haven't found an empty list item.
 		if ($matches[2] == '-' && preg_match('{^-(?: |$)}', $matches[1]))
 			return $matches[0];
@@ -458,17 +508,26 @@ class MarkdownParser {
 		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
-	function _doHeaders_callback_atx($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _doHeaders_callback_atx($matches)
+    {
 		$level = strlen($matches[1])+3;
 		$block = "<h$level>".$this->runSpanGamut($matches[2])."</h$level>";
 		return "\n" . $this->hashBlock($block) . "\n\n";
 	}
 
 
-	function doLists($text) {
-	#
-	# Form HTML ordered (numbered) and unordered (bulleted) lists.
-	#
+    /**
+     * Form HTML ordered (numbered) and unordered (bulleted) lists.
+     * @param $text
+     * @return mixed
+     */
+    function doLists($text)
+    {
 		$less_than_tab = $this->tab_width - 1;
 
 		# Re-usable patterns to match list item bullets and number markers:
@@ -531,8 +590,14 @@ class MarkdownParser {
 
 		return $text;
 	}
-	function _doLists_callback($matches) {
-		# Re-usable patterns to match list item bullets and number markers:
+
+    /**
+     * Re-usable patterns to match list item bullets and number markers:
+     * @param $matches
+     * @return string
+     */
+    function _doLists_callback($matches)
+    {
 		$marker_ul_re  = '[*+-]';
 		$marker_ol_re  = '\d+[\.]';
 		$marker_any_re = "(?:$marker_ul_re|$marker_ol_re)";
@@ -549,13 +614,18 @@ class MarkdownParser {
 		return "\n". $result ."\n\n";
 	}
 
-	var $list_level = 0;
+	public $list_level = 0;
 
-	function processListItems($list_str, $marker_any_re) {
-	#
-	#	Process the contents of a single ordered or unordered list, splitting it
-	#	into individual list items.
-	#
+    /**
+     * Process the contents of a single ordered or unordered list, splitting it
+     * into individual list items.
+     *
+     * @param $list_str
+     * @param $marker_any_re
+     * @return mixed
+     */
+    function processListItems($list_str, $marker_any_re)
+    {
 		# The $this->list_level global keeps track of when we're inside a list.
 		# Each time we enter a list, we increment it; when we leave a list,
 		# we decrement. If it's zero, we're not in a list anymore.
@@ -597,7 +667,13 @@ class MarkdownParser {
 		$this->list_level--;
 		return $list_str;
 	}
-	function _processListItems_callback($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _processListItems_callback($matches)
+    {
 		$item = $matches[4];
 		$leading_line =& $matches[1];
 		$leading_space =& $matches[2];
@@ -621,7 +697,12 @@ class MarkdownParser {
 		return "<li>" . $item . "</li>";
 	}
 
-	function doItalicsAndBold($text) {
+    /**
+     * @param $text
+     * @return mixed
+     */
+    function doItalicsAndBold($text)
+    {
 		# delimiters
 		foreach ($this->replace as $index => $value) { 
 			$quotedValue = preg_quote($index, '#'); 
@@ -630,7 +711,11 @@ class MarkdownParser {
 		return $text;
 	}
 
-	function _doItalicsAndBold_callback($found)
+    /**
+     * @param $found
+     * @return string
+     */
+    function _doItalicsAndBold_callback($found)
 	{
 
 		#echo '<pre>';
@@ -652,8 +737,12 @@ class MarkdownParser {
 		);
 	}
 
-
-	function doBlockQuotes($text) {
+    /**
+     * @param $text
+     * @return mixed
+     */
+    function doBlockQuotes($text)
+    {
 		$text = preg_replace_callback('/
 			  (								# Wrap whole match in $1
 				(?>
@@ -668,7 +757,13 @@ class MarkdownParser {
 
 		return $text;
 	}
-	function _doBlockQuotes_callback($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _doBlockQuotes_callback($matches)
+    {
 		$bq = $matches[1];
 		# trim one level of quoting - trim whitespace-only lines
 		$bq = preg_replace('/^[ ]*>[ ]?|^[ ]+$/m', '', $bq);
@@ -682,18 +777,25 @@ class MarkdownParser {
 		// $bq = str_replace("\n\n", "\n", $bq);
 		return "\n". $this->hashBlock("<blockquote>$bq</blockquote>")."\n\n";
 	}
-	function _doBlockQuotes_callback2($matches) {
+
+    /**
+     * @param $matches
+     * @return mixed
+     */
+    function _doBlockQuotes_callback2($matches)
+    {
 		$pre = $matches[1];
 		$pre = preg_replace('/^  /m', '', $pre);
 		return $pre;
 	}
 
 
-	function formParagraphs($text) {
-	#
-	#	Params:
-	#		$text - string to process with html <p> tags
-	#
+    /**
+     * @param $text - string to process with html <p> tags
+     * @return string
+     */
+    function formParagraphs($text)
+    {
 		# Strip leading and trailing lines:
 		$text = preg_replace('/\A\n+|\n+\z/', '', $text);
 
@@ -724,22 +826,28 @@ class MarkdownParser {
 	}
 
 
-	function encodeAttribute($text) {
-	#
-	# Encode text for a double-quoted HTML attribute. This function
-	# is *not* suitable for attributes enclosed in single quotes.
-	#
+    /**
+     * Encode text for a double-quoted HTML attribute. This function
+     * is *not* suitable for attributes enclosed in single quotes.
+     * @param $text
+     * @return mixed
+     */
+    function encodeAttribute($text)
+    {
 		$text = $this->encodeAmpsAndAngles($text);
 		$text = str_replace('"', '&quot;', $text);
 		return $text;
 	}
-	
 
-	function parseSpan($str) {
-	#
-	# Take the string $str and parse it into tokens, hashing embeded HTML,
-	# escaped characters and handling code spans.
-	#
+
+    /**
+     * Take the string $str and parse it into tokens, hashing embeded HTML,
+     * escaped characters and handling code spans.
+     * @param $str
+     * @return string
+     */
+    function parseSpan($str)
+    {
 		$output = '';
 		
 		$span_re = '{
@@ -764,7 +872,7 @@ class MarkdownParser {
 				)
 				}xs';
 
-		while (1) {
+		while (true) {
 			#
 			# Each loop iteration seach for either the next tag, the next 
 			# openning code span marker, or the next escaped character. 
@@ -789,13 +897,17 @@ class MarkdownParser {
 		
 		return $output;
 	}
-	
-	
-	function handleSpanToken($token, &$str) {
-	#
-	# Handle $token provided by parseSpan by determining its nature and 
-	# returning the corresponding value that should replace it.
-	#
+
+
+    /**
+     * Handle $token provided by parseSpan by determining its nature and
+     * returning the corresponding value that should replace it.
+     * @param $token
+     * @param $str
+     * @return string
+     */
+    function handleSpanToken($token, &$str)
+    {
 		switch ($token{0}) {
 			case "\\":
 				if(isset($token{1})) {
@@ -819,22 +931,28 @@ class MarkdownParser {
 	}
 
 
-	function outdent($text) {
-	#
-	# Remove one level of line-leading tabs or spaces
-	#
+    /**
+     * Remove one level of line-leading tabs or spaces
+     * @param $text
+     * @return mixed
+     */
+    function outdent($text)
+    {
 		return preg_replace('/^(\t|[ ]{1,'.$this->tab_width.'})/m', '', $text);
 	}
 
 
 	# String length function for detab. `_initDetab` will create a function to 
 	# hanlde UTF-8 if the default function does not exist.
-	var $utf8_strlen = 'mb_strlen';
-	
-	function detab($text) {
-	#
-	# Replace tabs with the appropriate amount of space.
-	#
+	public $utf8_strlen = 'mb_strlen';
+
+    /**
+     * Replace tabs with the appropriate amount of space.
+     * @param $text
+     * @return mixed
+     */
+    function detab($text)
+    {
 		# For each line we separate the line in blocks delemited by
 		# tab characters. Then we reconstruct every line by adding the 
 		# appropriate number of space between each blocks.
@@ -844,7 +962,13 @@ class MarkdownParser {
 
 		return $text;
 	}
-	function _detab_callback($matches) {
+
+    /**
+     * @param $matches
+     * @return string
+     */
+    function _detab_callback($matches)
+    {
 		$line = $matches[0];
 		$strlen = $this->utf8_strlen; # strlen function for UTF-8.
 		
@@ -861,7 +985,11 @@ class MarkdownParser {
 		}
 		return $line;
 	}
-	function _initDetab() {
+
+    /**
+     *
+     */
+    function _initDetab() {
 	#
 	# Check for the availability of the function in the `utf8_strlen` property
 	# (initially `mb_strlen`). If the function is not available, create a 
@@ -875,16 +1003,24 @@ class MarkdownParser {
 	}
 
 
-	function unhash($text) {
-	#
-	# Swap back in all the tags hashed by _HashHTMLBlocks.
-	#
-		return preg_replace_callback('/(.)\x1A[0-9]+\1/', 
+    /**
+     * Swap back in all the tags hashed by _HashHTMLBlocks.
+     * @param $text
+     * @return mixed
+     */
+    function unhash($text)
+    {
+		return preg_replace_callback('/(.)\x1A[0-9]+\1/',
 			array(&$this, '_unhash_callback'), $text);
 	}
-	function _unhash_callback($matches) {
+
+    /**
+     * @param $matches
+     * @return mixed
+     */
+    function _unhash_callback($matches)
+    {
 		return $this->html_hashes[$matches[0]];
 	}
 
 }
-?>
