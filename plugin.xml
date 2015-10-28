@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<name>
+		<lang name="default">Beautypo</lang>
+		<lang name="russian">Beautypo</lang>
+	</name>
+	<author>
+		<lang name="default">Andrew Borisenko</lang>
+		<lang name="russian">Андрей Борисенко</lang>
+	</author>
+	<homepage>http://seigiard.com</homepage>
+	<version>0.0.1</version>
+	<requires>
+		<livestreet>1.0</livestreet>
+		<plugins>
+		</plugins>
+	</requires>
+	<description>
+		<lang name="default">Beauty and simple typo.</lang>
+		<lang name="russian">Разметка, типографика, клевые няшки.</lang>
+	</description>
+</plugin>
